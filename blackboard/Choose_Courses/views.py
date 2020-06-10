@@ -15,10 +15,8 @@ def index(request):
     courses = Course.objects.all()
     output = {}
     for course in courses:
-        output[course.name] = course.teacher
-    return render(request, 'Choose_Courses/index.html', output)
-#    output = json.dumps(output, ensure_ascii=False)    
-#    return JsonResponse(output, safe=False, json_dumps_params={'ensure_ascii': False})
+        output[course.name] = course.id
+    return render(request, 'Choose_Courses/index.html', {'output':output})
     
         
 def get_details(request, course_id):
