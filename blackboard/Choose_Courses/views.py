@@ -5,18 +5,21 @@ from django.core.serializers.json import json
 from django import forms
 from django.urls import reverse
 
-# Create your views here.
+
 
 def index(request):
     #获得所有的课程,课程名：教师
+    if not request.session.get('is_login', None):
+        message = '很抱歉，只有登陆后才能查看主页信息'
+        return render(request, 'Choose_Courses/login.html', {'message': message})
     courses = Course.objects.all()
     output = {}
     for course in courses:
         output[course.name] = course.teacher
-    output = json.dumps(output, ensure_ascii=False)
-    return JsonResponse(output,
-                        safe=False,
-                        json_dumps_params={'ensure_ascii':False})
+    return render(request, 'Choose_Courses/index.html', output)
+#    output = json.dumps(output, ensure_ascii=False)    
+#    return JsonResponse(output, safe=False, json_dumps_params={'ensure_ascii': False})
+    
         
 def get_details(request, course_id):
     #查看course_id对应的课程详细信息
@@ -64,6 +67,8 @@ def register(request):
 
 def login(request):
     #学生登录
+    if request.session.get('is_login', None):  #不允许重复登录
+        return redirect('/index/')
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -72,10 +77,13 @@ def login(request):
             try:
                 user = User.objects.get(name=username)
             except:
-                message = '用户不存在！'
+                message = '用户名不存在，请重新输入用户名或注册新用户'
                 return render(request, 'Choose_Courses/login.html', {'message': message})
-            if user.password == password:
-                return HttpResponseRedirect('/index')
+            if user.password == password:       #如果成功登录了
+                request.session['is_login'] = True
+                request.session['user_id'] = user.id
+                request.session['user_name'] = user.name
+                return render(request, 'Choose_Courses/index.html')
             else:
                 message = '密码错误！'
                 return render(request, 'Choose_Courses/login.html', {'message': message})
@@ -83,6 +91,9 @@ def login(request):
 
 def logout(request):
     #登出
-    pass
+    if not request.session.get('is_login'): #如果没有登录
+        return redirect('/index')  
+    request.session.flush()  #删除会话
+    return redirect('/index')
 
     

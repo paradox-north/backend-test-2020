@@ -6,14 +6,15 @@
 </head>
 <body>
 
-    <div style="margin: 15% 40%;">
-        <h1>欢迎注册！</h1>
+     <div style="margin: 15% 40%;">
+
        <form class="form-register" action="/register/" method="post">
                   {% if message %}
                     <div class="alert alert-warning">{{ message }}</div>
                   {% endif %}
                   {% csrf_token %}
                   <div class="form-group">
+                  <h3 class="text-center">欢迎注册</h3>
                     <label for="id_username">用户名：</label>
                     <input type="text" name='username' class="form-control" id="id_username" placeholder="Username" autofocus required>
                   </div>
