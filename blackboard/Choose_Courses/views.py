@@ -29,6 +29,33 @@ def get_details(request, course_id):
         }
     return JsonResponse(output, json_dumps_params={'ensure_ascii': False})
 
+def choose(request, course_id):
+    #用户根据course_id(pk)选课
+    if (request.method == 'GET'):
+        user_name = request.session['user_name']
+        user = User.objects.get(name=user_name)
+        course = Course.objects.get(pk=course_id)
+        if (course in user.courses.all()):
+            message = '你已经选中了这门课！'
+            return render(request,'Choose_Courses/choose.html',{'message':message})
+        user.courses.add(course)
+        message = '选课成功'
+        return render(request,'Choose_Courses/choose.html',{'message':message})
+
+def cancel(request, course_id):
+    #根据course_id退课
+    if (request.method == 'GET'):
+        user_id = request.session['user_id']
+        user = User.objects.get(pk=user_id)
+        course = Course.objects.get(pk=course_id)
+        if (course not in user.courses.all()):
+            message = '你还没有选这门课'
+            return render(request,'Choose_Courses/cancel.html',{'message':message}) 
+        user.courses.remove(course)
+        message = "退课成功"
+        return render(request,'Choose_Courses/cancel.html',{'message':message})
+
+
 '''以下为注册，登录，登出系统
 未登录-->全部跳转login
 已登录-->访问login自动跳转index，不允许访问register，需要先logout
@@ -81,7 +108,7 @@ def login(request):
                 request.session['is_login'] = True
                 request.session['user_id'] = user.id
                 request.session['user_name'] = user.name
-                return render(request, 'Choose_Courses/index.html')
+                return redirect('/index')
             else:
                 message = '密码错误！'
                 return render(request, 'Choose_Courses/login.html', {'message': message})

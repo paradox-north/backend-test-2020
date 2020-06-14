@@ -28,6 +28,8 @@ class User(models.Model):
     name = models.CharField("姓名", max_length=50)
     password = models.CharField("密码", max_length=50)
     created_time = models.DateTimeField(auto_now_add=True)
+    courses = models.ManyToManyField("Course")  #学生与课程多对多
+    
     class Meta:
         verbose_name = "用户"
         verbose_name_plural = verbose_name
