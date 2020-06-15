@@ -55,6 +55,25 @@ def cancel(request, course_id):
         message = "退课成功"
         return render(request,'Choose_Courses/cancel.html',{'message':message})
 
+def show(request):
+    #展示用户选择的所有课程
+    if not request.session.get('is_login'):
+        message = '你还没有登录'
+        return render(request,'Choose_Courses/login.html',{'message':message})
+    user_id = request.session['user_id']
+    user = User.objects.get(pk=user_id)
+    chosen_courses = user.courses.all()
+    if not chosen_courses:
+        message = "你还没有选中的课"
+        return render(request, 'Choose_Courses/show.html', {'message': message})
+    output = {}
+    for course in chosen_courses:
+        detail = {}
+        detail['授课教师'] = course.teacher
+        detail['课程内容'] = course.content
+        output[course.name] = detail
+    return render(request, 'Choose_Courses/show.html', {'output':output})
+
 
 '''以下为注册，登录，登出系统
 未登录-->全部跳转login
