@@ -1,4 +1,5 @@
 1.该框架含有一个app，app名称为Choose_Courses
+
 2.app包含的功能：
 	(1)用户账户相关
 		*注册与登录账户
@@ -8,6 +9,7 @@
 		*用户根据课程的`pk`选中课程
 		*列出用户选中的课程
 		*退课
+		
 3.urls：
 	(1)用户账户相关
 		register/  注册用户
@@ -19,6 +21,7 @@
 		choose/<int:course_id>    用户根据课程id选中课程
 		cancel/<int:course_id>    用户根据课程id退课
 		show/      列出用户选中的所有课程
+
 4.包含内容：
 	request中有
 		is_login<bool>   用户是否登录
