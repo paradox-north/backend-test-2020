@@ -13,7 +13,9 @@
 <p>所有开设课程</p>
 
 {% for key, value in output.items %}
-<br> <a href = "/detail/{{value}}" > {{key}}<a href = "/choose/{{value}}">选课<a href = "/cancel/{{value}}">退课 <a/>
+<br> <a href = "/detail/{{value}}" > {{key}}
+     <a href = "/choose/{{value}}">选课
+     <a href = "/cancel/{{value}}">退课 <a/>
 {% endfor %}
 <p>
 <a href = "/show">查看所有已选课程</a>
